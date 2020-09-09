@@ -1,0 +1,37 @@
+name: 'Compile Project Code and Tests'
+description: 'Github Action to compile the project and project test code.'
+
+inputs:
+  main_path:
+    required: true
+  Xlint:
+    required: true
+    default: 'none'
+  Xdoclint:
+    required: true
+    default: 'none'
+  failOnWarn:
+    required: true
+    default: 'false'
+
+runs:
+  using: "composite"
+  steps:
+  - name: Compile Project Code
+    id: compile-main
+    shell: bash
+    working-directory: ${{ inputs.main_path }}
+    run: |
+      echo "Compiling Project Code..."
+
+      mvn -ntp -DcompileOptionXlint="-Xlint:${{ inputs.Xlint }}" -DcompileOptionXdoclint="-Xdoclint:${{ inputs.Xdoclint }}" -DcompileOptionFail="${{ inputs.failOnWarn }}" -Dmaven.compiler.showWarnings="true" compile
+
+  - name: Compile Test Code
+    id: compile-test
+    shell: bash
+    working-directory: ${{ inputs.main_path }}
+    run: |
+      echo ""
+      echo "Compiling Test Code..."
+
+      mvn -ntp -DcompileOptionXlint="-Xlint:none" -DcompileOptionXdoclint="-Xdoclint:none" -DcompileOptionFail="false" -Dmaven.compiler.showWarnings="false" test-compile
