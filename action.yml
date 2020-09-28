@@ -26,6 +26,13 @@ runs:
 
       mvn -ntp -DcompileOptionXlint="-Xlint:${{ inputs.Xlint }}" -DcompileOptionXdoclint="-Xdoclint:${{ inputs.Xdoclint }}" -DcompileOptionFail="${{ inputs.failOnWarn }}" -Dmaven.compiler.showWarnings="true" compile
 
+  - name: Display Main Classes
+    shell: bash
+    working-directory: ${{ inputs.main_path }}
+    run: |
+      echo "Compiled Main Classes..."
+      ls target/classes
+
   - name: Compile Test Code
     id: compile-test
     shell: bash
@@ -35,3 +42,10 @@ runs:
       echo "Compiling Test Code..."
 
       mvn -ntp -DcompileOptionXlint="-Xlint:none" -DcompileOptionXdoclint="-Xdoclint:none" -DcompileOptionFail="false" -Dmaven.compiler.showWarnings="false" test-compile
+
+  - name: Display Test Classes
+    shell: bash
+    working-directory: ${{ inputs.main_path }}
+    run: |
+      echo "Compiled Test Classes..."
+      ls target/test-classes
